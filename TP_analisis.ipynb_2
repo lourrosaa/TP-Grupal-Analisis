@@ -1,0 +1,1010 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/lourrosaa/TP-Grupal-Analisis/blob/Clara-Brunch/TP_analisis.ipynb_2\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from google.colab import files\n",
+        "subido = files.upload()\n",
+        "print(subido.keys())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 334
+        },
+        "id": "BkMR6E_aQco6",
+        "outputId": "8c9e7bae-2a6d-47ba-e169-979225571a61"
+      },
+      "execution_count": 1,
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.HTML object>"
+            ],
+            "text/html": [
+              "\n",
+              "     <input type=\"file\" id=\"files-a8215a72-8491-44b8-8ee1-e3521a8e6f0c\" name=\"files[]\" multiple disabled\n",
+              "        style=\"border:none\" />\n",
+              "     <output id=\"result-a8215a72-8491-44b8-8ee1-e3521a8e6f0c\">\n",
+              "      Upload widget is only available when the cell has been executed in the\n",
+              "      current browser session. Please rerun this cell to enable.\n",
+              "      </output>\n",
+              "      <script>// Copyright 2017 Google LLC\n",
+              "//\n",
+              "// Licensed under the Apache License, Version 2.0 (the \"License\");\n",
+              "// you may not use this file except in compliance with the License.\n",
+              "// You may obtain a copy of the License at\n",
+              "//\n",
+              "//      http://www.apache.org/licenses/LICENSE-2.0\n",
+              "//\n",
+              "// Unless required by applicable law or agreed to in writing, software\n",
+              "// distributed under the License is distributed on an \"AS IS\" BASIS,\n",
+              "// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n",
+              "// See the License for the specific language governing permissions and\n",
+              "// limitations under the License.\n",
+              "\n",
+              "/**\n",
+              " * @fileoverview Helpers for google.colab Python module.\n",
+              " */\n",
+              "(function(scope) {\n",
+              "function span(text, styleAttributes = {}) {\n",
+              "  const element = document.createElement('span');\n",
+              "  element.textContent = text;\n",
+              "  for (const key of Object.keys(styleAttributes)) {\n",
+              "    element.style[key] = styleAttributes[key];\n",
+              "  }\n",
+              "  return element;\n",
+              "}\n",
+              "\n",
+              "// Max number of bytes which will be uploaded at a time.\n",
+              "const MAX_PAYLOAD_SIZE = 100 * 1024;\n",
+              "\n",
+              "function _uploadFiles(inputId, outputId) {\n",
+              "  const steps = uploadFilesStep(inputId, outputId);\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  // Cache steps on the outputElement to make it available for the next call\n",
+              "  // to uploadFilesContinue from Python.\n",
+              "  outputElement.steps = steps;\n",
+              "\n",
+              "  return _uploadFilesContinue(outputId);\n",
+              "}\n",
+              "\n",
+              "// This is roughly an async generator (not supported in the browser yet),\n",
+              "// where there are multiple asynchronous steps and the Python side is going\n",
+              "// to poll for completion of each step.\n",
+              "// This uses a Promise to block the python side on completion of each step,\n",
+              "// then passes the result of the previous step as the input to the next step.\n",
+              "function _uploadFilesContinue(outputId) {\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  const steps = outputElement.steps;\n",
+              "\n",
+              "  const next = steps.next(outputElement.lastPromiseValue);\n",
+              "  return Promise.resolve(next.value.promise).then((value) => {\n",
+              "    // Cache the last promise value to make it available to the next\n",
+              "    // step of the generator.\n",
+              "    outputElement.lastPromiseValue = value;\n",
+              "    return next.value.response;\n",
+              "  });\n",
+              "}\n",
+              "\n",
+              "/**\n",
+              " * Generator function which is called between each async step of the upload\n",
+              " * process.\n",
+              " * @param {string} inputId Element ID of the input file picker element.\n",
+              " * @param {string} outputId Element ID of the output display.\n",
+              " * @return {!Iterable<!Object>} Iterable of next steps.\n",
+              " */\n",
+              "function* uploadFilesStep(inputId, outputId) {\n",
+              "  const inputElement = document.getElementById(inputId);\n",
+              "  inputElement.disabled = false;\n",
+              "\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  outputElement.innerHTML = '';\n",
+              "\n",
+              "  const pickedPromise = new Promise((resolve) => {\n",
+              "    inputElement.addEventListener('change', (e) => {\n",
+              "      resolve(e.target.files);\n",
+              "    });\n",
+              "  });\n",
+              "\n",
+              "  const cancel = document.createElement('button');\n",
+              "  inputElement.parentElement.appendChild(cancel);\n",
+              "  cancel.textContent = 'Cancel upload';\n",
+              "  const cancelPromise = new Promise((resolve) => {\n",
+              "    cancel.onclick = () => {\n",
+              "      resolve(null);\n",
+              "    };\n",
+              "  });\n",
+              "\n",
+              "  // Wait for the user to pick the files.\n",
+              "  const files = yield {\n",
+              "    promise: Promise.race([pickedPromise, cancelPromise]),\n",
+              "    response: {\n",
+              "      action: 'starting',\n",
+              "    }\n",
+              "  };\n",
+              "\n",
+              "  cancel.remove();\n",
+              "\n",
+              "  // Disable the input element since further picks are not allowed.\n",
+              "  inputElement.disabled = true;\n",
+              "\n",
+              "  if (!files) {\n",
+              "    return {\n",
+              "      response: {\n",
+              "        action: 'complete',\n",
+              "      }\n",
+              "    };\n",
+              "  }\n",
+              "\n",
+              "  for (const file of files) {\n",
+              "    const li = document.createElement('li');\n",
+              "    li.append(span(file.name, {fontWeight: 'bold'}));\n",
+              "    li.append(span(\n",
+              "        `(${file.type || 'n/a'}) - ${file.size} bytes, ` +\n",
+              "        `last modified: ${\n",
+              "            file.lastModifiedDate ? file.lastModifiedDate.toLocaleDateString() :\n",
+              "                                    'n/a'} - `));\n",
+              "    const percent = span('0% done');\n",
+              "    li.appendChild(percent);\n",
+              "\n",
+              "    outputElement.appendChild(li);\n",
+              "\n",
+              "    const fileDataPromise = new Promise((resolve) => {\n",
+              "      const reader = new FileReader();\n",
+              "      reader.onload = (e) => {\n",
+              "        resolve(e.target.result);\n",
+              "      };\n",
+              "      reader.readAsArrayBuffer(file);\n",
+              "    });\n",
+              "    // Wait for the data to be ready.\n",
+              "    let fileData = yield {\n",
+              "      promise: fileDataPromise,\n",
+              "      response: {\n",
+              "        action: 'continue',\n",
+              "      }\n",
+              "    };\n",
+              "\n",
+              "    // Use a chunked sending to avoid message size limits. See b/62115660.\n",
+              "    let position = 0;\n",
+              "    do {\n",
+              "      const length = Math.min(fileData.byteLength - position, MAX_PAYLOAD_SIZE);\n",
+              "      const chunk = new Uint8Array(fileData, position, length);\n",
+              "      position += length;\n",
+              "\n",
+              "      const base64 = btoa(String.fromCharCode.apply(null, chunk));\n",
+              "      yield {\n",
+              "        response: {\n",
+              "          action: 'append',\n",
+              "          file: file.name,\n",
+              "          data: base64,\n",
+              "        },\n",
+              "      };\n",
+              "\n",
+              "      let percentDone = fileData.byteLength === 0 ?\n",
+              "          100 :\n",
+              "          Math.round((position / fileData.byteLength) * 100);\n",
+              "      percent.textContent = `${percentDone}% done`;\n",
+              "\n",
+              "    } while (position < fileData.byteLength);\n",
+              "  }\n",
+              "\n",
+              "  // All done.\n",
+              "  yield {\n",
+              "    response: {\n",
+              "      action: 'complete',\n",
+              "    }\n",
+              "  };\n",
+              "}\n",
+              "\n",
+              "scope.google = scope.google || {};\n",
+              "scope.google.colab = scope.google.colab || {};\n",
+              "scope.google.colab._files = {\n",
+              "  _uploadFiles,\n",
+              "  _uploadFilesContinue,\n",
+              "};\n",
+              "})(self);\n",
+              "</script> "
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "error",
+          "ename": "KeyboardInterrupt",
+          "evalue": "",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mKeyboardInterrupt\u001b[0m                         Traceback (most recent call last)",
+            "\u001b[0;32m/tmp/ipykernel_3413/1436108529.py\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0;32mfrom\u001b[0m \u001b[0mgoogle\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcolab\u001b[0m \u001b[0;32mimport\u001b[0m \u001b[0mfiles\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 2\u001b[0;31m \u001b[0msubido\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mfiles\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mupload\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      3\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0msubido\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mkeys\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.13/dist-packages/google/colab/files.py\u001b[0m in \u001b[0;36mupload\u001b[0;34m(target_dir)\u001b[0m\n\u001b[1;32m     67\u001b[0m   \"\"\"\n\u001b[1;32m     68\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 69\u001b[0;31m   \u001b[0muploaded_files\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_upload_files\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmultiple\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;32mTrue\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     70\u001b[0m   \u001b[0;31m# Mapping from original filename to filename as saved locally.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     71\u001b[0m   \u001b[0mlocal_filenames\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mdict\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.13/dist-packages/google/colab/files.py\u001b[0m in \u001b[0;36m_upload_files\u001b[0;34m(multiple)\u001b[0m\n\u001b[1;32m    159\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    160\u001b[0m   \u001b[0;31m# First result is always an indication that the file picker has completed.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 161\u001b[0;31m   result = _output.eval_js(\n\u001b[0m\u001b[1;32m    162\u001b[0m       'google.colab._files._uploadFiles(\"{input_id}\", \"{output_id}\")'.format(\n\u001b[1;32m    163\u001b[0m           \u001b[0minput_id\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0minput_id\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0moutput_id\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0moutput_id\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.13/dist-packages/google/colab/output/_js.py\u001b[0m in \u001b[0;36meval_js\u001b[0;34m(script, ignore_result, timeout_sec)\u001b[0m\n\u001b[1;32m     38\u001b[0m   \u001b[0;32mif\u001b[0m \u001b[0mignore_result\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     39\u001b[0m     \u001b[0;32mreturn\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 40\u001b[0;31m   \u001b[0;32mreturn\u001b[0m \u001b[0m_message\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mread_reply_from_input\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mrequest_id\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mtimeout_sec\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     41\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     42\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.13/dist-packages/google/colab/_message.py\u001b[0m in \u001b[0;36mread_reply_from_input\u001b[0;34m(message_id, timeout_sec)\u001b[0m\n\u001b[1;32m     94\u001b[0m     \u001b[0mreply\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_read_next_input_message\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     95\u001b[0m     \u001b[0;32mif\u001b[0m \u001b[0mreply\u001b[0m \u001b[0;34m==\u001b[0m \u001b[0m_NOT_READY\u001b[0m \u001b[0;32mor\u001b[0m \u001b[0;32mnot\u001b[0m \u001b[0misinstance\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mreply\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mdict\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 96\u001b[0;31m       \u001b[0mtime\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msleep\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m0.025\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     97\u001b[0m       \u001b[0;32mcontinue\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     98\u001b[0m     if (\n",
+            "\u001b[0;31mKeyboardInterrupt\u001b[0m: "
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Cargamos datos, importamos las librerias necesarias para el analisis y la carga del arhivo CSV. Mostrando la informacion principal del Dataframe con las primeras y ultimas filas, cantidad de filas y columnas, datos vacios y filas repetidas. Printeamos cada cosa para que no ejecute solo el ultimo codigo que le pedimos."
+      ],
+      "metadata": {
+        "id": "bfbzu5qfEjT-"
+      }
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "id": "BniHohsLEWKO",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "924ff19c-7643-4fcf-89fd-46b5adac4c60"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "        id           brand   category                            name  \\\n",
+            "0  2218774  Acqua Di Parma  Fragrance  Blu Mediterraneo MINIATURE Set   \n",
+            "1  2044816  Acqua Di Parma    Cologne                         Colonia   \n",
+            "2  1417567  Acqua Di Parma    Perfume                Arancia di Capri   \n",
+            "3  1417617  Acqua Di Parma    Perfume                Mirto di Panarea   \n",
+            "4  2218766  Acqua Di Parma  Fragrance           Colonia Miniature Set   \n",
+            "\n",
+            "             size  rating  number_of_reviews  love  price  value_price  ...  \\\n",
+            "0  5 x 0.16oz/5mL     4.0                  4  3002   66.0         75.0  ...   \n",
+            "1   0.7 oz/ 20 mL     4.5                 76  2700   66.0         66.0  ...   \n",
+            "2    5 oz/ 148 mL     4.5                 26  2600  180.0        180.0  ...   \n",
+            "3   2.5 oz/ 74 mL     4.5                 23  2900  120.0        120.0  ...   \n",
+            "4  5 x 0.16oz/5mL     3.5                  2   943   72.0         80.0  ...   \n",
+            "\n",
+            "  MarketingFlags  MarketingFlags_content  \\\n",
+            "0           True             online only   \n",
+            "1           True             online only   \n",
+            "2           True             online only   \n",
+            "3           True             online only   \n",
+            "4           True             online only   \n",
+            "\n",
+            "                                             options  \\\n",
+            "0                                         no options   \n",
+            "1   - 0.7 oz/ 20 mL  Spray  - 1.7 oz/ 50 mL Eau d...   \n",
+            "2   - 1oz/30mL Eau de Toilette  - 2.5 oz/ 74 mL E...   \n",
+            "3   - 1 oz/ 30 mL Eau de Toilette Spray - 2.5 oz/...   \n",
+            "4                                         no options   \n",
+            "\n",
+            "                                             details  \\\n",
+            "0  This enchanting set comes in a specially handc...   \n",
+            "1  An elegant timeless scent filled with a fresh-...   \n",
+            "2  Fragrance Family: Fresh Scent Type: Fresh Citr...   \n",
+            "3  Panarea near Sicily is an an island suspended ...   \n",
+            "4  The Colonia Miniature Set comes in an iconic A...   \n",
+            "\n",
+            "                                          how_to_use  \\\n",
+            "0  Suggested Usage:-Fragrance is intensified by t...   \n",
+            "1                                    no instructions   \n",
+            "2                                    no instructions   \n",
+            "3                                    no instructions   \n",
+            "4  Suggested Usage:-Fragrance is intensified by t...   \n",
+            "\n",
+            "                                         ingredients online_only  exclusive  \\\n",
+            "0  Arancia di Capri Eau de Toilette: Alcohol Dena...           1          0   \n",
+            "1                                            unknown           1          0   \n",
+            "2  Alcohol Denat.- Water- Fragrance- Limonene- Li...           1          0   \n",
+            "3                                            unknown           1          0   \n",
+            "4  Colonia: Alcohol Denat.- Water- Fragrance- Lim...           1          0   \n",
+            "\n",
+            "   limited_edition  limited_time_offer  \n",
+            "0                0                   0  \n",
+            "1                0                   0  \n",
+            "2                0                   0  \n",
+            "3                0                   0  \n",
+            "4                0                   0  \n",
+            "\n",
+            "[5 rows x 21 columns]\n",
+            "           id               brand            category  \\\n",
+            "9163  2208502  SEPHORA COLLECTION          Face Masks   \n",
+            "9164  2298909  SEPHORA COLLECTION            Lip Sets   \n",
+            "9165  2236750  SEPHORA COLLECTION  Tinted Moisturizer   \n",
+            "9166       50  SEPHORA COLLECTION         no category   \n",
+            "9167      304  SEPHORA COLLECTION         no category   \n",
+            "\n",
+            "                                            name              size  rating  \\\n",
+            "9163                          The Rose Gold Mask           no size     2.0   \n",
+            "9164  Give Me Some Sugar Colorful Gloss Balm Set  3 x 0.32 oz/ 9 g     0.0   \n",
+            "9165               Weekend Warrior Tone Up Cream   0.946 oz/ 28 mL     0.0   \n",
+            "9166                                   Gift Card           no size     5.0   \n",
+            "9167                    Happy Birthday Gift Card           no size     0.0   \n",
+            "\n",
+            "      number_of_reviews  love  price  value_price  ... MarketingFlags  \\\n",
+            "9163                 15  6200    6.0          6.0  ...           True   \n",
+            "9164                  0   266   15.0         27.0  ...           True   \n",
+            "9165                  0   445   16.0         16.0  ...           True   \n",
+            "9166                 46     0   50.0         50.0  ...          False   \n",
+            "9167                  0     0   50.0         50.0  ...          False   \n",
+            "\n",
+            "           MarketingFlags_content     options  \\\n",
+            "9163  limited edition · exclusive  no options   \n",
+            "9164                    exclusive  no options   \n",
+            "9165                    exclusive  no options   \n",
+            "9166                            0  no options   \n",
+            "9167                            0  no options   \n",
+            "\n",
+            "                                                details  \\\n",
+            "9163  What it is: A limited-edition- nurturing and h...   \n",
+            "9164  What it is: A set of three bestselling Colorfu...   \n",
+            "9165  What it is: A weightless complexion booster- i...   \n",
+            "9166  What it is:- Available in denominations of $10...   \n",
+            "9167  What it is:\\n- Available in denominations of $...   \n",
+            "\n",
+            "                                             how_to_use  \\\n",
+            "9163  Suggested Usage:-Unfold the mask.-Apply the ma...   \n",
+            "9164  Suggested Usage:-Apply directly to lips using ...   \n",
+            "9165  Suggested Usage:-Use this product as the last ...   \n",
+            "9166                                    no instructions   \n",
+            "9167                                    no instructions   \n",
+            "\n",
+            "                                            ingredients online_only  \\\n",
+            "9163  -Rose Quartz Extract: Hydrates dry skin.  Aqua...           0   \n",
+            "9164  Colorful Gloss Balm Wanderlust: Hydrogenated P...           0   \n",
+            "9165  Aqua (Water)- Dimethicone- Isohexadecane- Poly...           0   \n",
+            "9166                                            unknown           0   \n",
+            "9167                                            unknown           0   \n",
+            "\n",
+            "      exclusive  limited_edition  limited_time_offer  \n",
+            "9163          1                1                   0  \n",
+            "9164          1                0                   0  \n",
+            "9165          1                0                   0  \n",
+            "9166          0                0                   0  \n",
+            "9167          0                0                   0  \n",
+            "\n",
+            "[5 rows x 21 columns]\n",
+            "(9168, 21)\n",
+            "id                          int64\n",
+            "brand                      object\n",
+            "category                   object\n",
+            "name                       object\n",
+            "size                       object\n",
+            "rating                    float64\n",
+            "number_of_reviews           int64\n",
+            "love                        int64\n",
+            "price                     float64\n",
+            "value_price               float64\n",
+            "URL                        object\n",
+            "MarketingFlags               bool\n",
+            "MarketingFlags_content     object\n",
+            "options                    object\n",
+            "details                    object\n",
+            "how_to_use                 object\n",
+            "ingredients                object\n",
+            "online_only                 int64\n",
+            "exclusive                   int64\n",
+            "limited_edition             int64\n",
+            "limited_time_offer          int64\n",
+            "dtype: object\n",
+            "id                        0\n",
+            "brand                     0\n",
+            "category                  0\n",
+            "name                      0\n",
+            "size                      0\n",
+            "rating                    0\n",
+            "number_of_reviews         0\n",
+            "love                      0\n",
+            "price                     0\n",
+            "value_price               0\n",
+            "URL                       0\n",
+            "MarketingFlags            0\n",
+            "MarketingFlags_content    0\n",
+            "options                   0\n",
+            "details                   0\n",
+            "how_to_use                0\n",
+            "ingredients               0\n",
+            "online_only               0\n",
+            "exclusive                 0\n",
+            "limited_edition           0\n",
+            "limited_time_offer        0\n",
+            "dtype: int64\n"
+          ]
+        }
+      ],
+      "source": [
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "\n",
+        "df = pd.read_csv(\"https://raw.githubusercontent.com/lourrosaa/TP-Grupal-Analisis/main/sephora_website_dataset(1).csv\")\n",
+        "df.head()\n",
+        "print(df.head())\n",
+        "df.tail() #para las ultimas\n",
+        "print(df.tail())\n",
+        "df.shape #cuenta filas y columnas\n",
+        "print(df.shape)\n",
+        "df.dtypes #tipo de dato por columna\n",
+        "print(df.dtypes)\n",
+        "df.isnull().sum() #filas repetidas\n",
+        "print(df.isnull().sum())"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Podemos ver que en este Dataset que importamos de Sephora ningun dato se encuentra vacio ademas de que la mayoria de datos son de texto o de numeros enteros, con solo pocas excepciones."
+      ],
+      "metadata": {
+        "id": "83HeXUn7Gvjt"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df[[\"limited_edition\", \"rating\", \"love\"]].describe()\n",
+        "print(df[[\"limited_edition\", \"rating\", \"love\"]].describe())\n",
+        "df[\"limited_edition\"].value_counts()"
+      ],
+      "metadata": {
+        "id": "rP4YSOtvKVbr",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 341
+        },
+        "outputId": "dde9a69a-94ce-4ad6-8db9-45888e17820c"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "       limited_edition       rating          love\n",
+            "count      9168.000000  9168.000000  9.168000e+03\n",
+            "mean          0.091841     3.990020  1.627859e+04\n",
+            "std           0.288817     1.007707  4.260651e+04\n",
+            "min           0.000000     0.000000  0.000000e+00\n",
+            "25%           0.000000     4.000000  1.600000e+03\n",
+            "50%           0.000000     4.000000  4.800000e+03\n",
+            "75%           0.000000     4.500000  1.380000e+04\n",
+            "max           1.000000     5.000000  1.300000e+06\n"
+          ]
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "limited_edition\n",
+              "0    8326\n",
+              "1     842\n",
+              "Name: count, dtype: int64"
+            ],
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>count</th>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>limited_edition</th>\n",
+              "      <th></th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>8326</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>842</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div><br><label><b>dtype:</b> int64</label>"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 28
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "De los 9168 productos, solo 842 son de edicion limitada"
+      ],
+      "metadata": {
+        "id": "zoISFk2TMDuQ"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.groupby(\"limited_edition\")[\"love\"].median()\n"
+      ],
+      "metadata": {
+        "id": "6jjdtpkcMeLE",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 178
+        },
+        "outputId": "d2416568-1c68-4425-b86d-85dfb80ff5aa"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "limited_edition\n",
+              "0    5000.0\n",
+              "1    3000.0\n",
+              "Name: love, dtype: float64"
+            ],
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>love</th>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>limited_edition</th>\n",
+              "      <th></th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>5000.0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>3000.0</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div><br><label><b>dtype:</b> float64</label>"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 29
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "De los productos en total, se ve que los normales gustan mas que los productos de edicion limitada. Sin embargo tal vez eso no sea porque sean menos queridos por los compradores, se podria deber tambien a que al ser ediciones limitadas y durar menos tiempo en el mercado tienen menos tiempo para acumular \"loves\", no todos alcanzan a comprarlos o simplemente las personas prefieren los productos clasicos."
+      ],
+      "metadata": {
+        "id": "euKnGGcoMysx"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### Comparación de favoritos por tipo de producto\n",
+        "Se agrupan los productos según sean de edición limitada o no y se calcula la mediana de favoritos de cada grupo.\n",
+        "Utilizamos la mediana porque algunos productos tienen cantidades de favoritos muy elevadas que pueden aumentar considerablemente el promedio.\n",
+        "\n",
+        "Esto permite analizar si los productros de edición limitada presentan mayor popularidad."
+      ],
+      "metadata": {
+        "id": "Kd9JH33Oak4R"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df_rating = df[df[\"rating\"] > 0]\n",
+        "print(df_rating)\n",
+        "df_rating.groupby(\"limited_edition\")[\"rating\"].median()\n",
+        "print(df_rating.groupby(\"limited_edition\")[\"rating\"].median())\n",
+        "df_rating.groupby(\"limited_edition\")[\"rating\"].mean()\n",
+        "print(df_rating.groupby(\"limited_edition\")[\"rating\"].mean())"
+      ],
+      "metadata": {
+        "id": "8bnMDmIyPZsi",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "c0ea02d0-1f3d-4e6b-d637-eb157f9af806"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "           id               brand                  category  \\\n",
+            "0     2218774      Acqua Di Parma                 Fragrance   \n",
+            "1     2044816      Acqua Di Parma                   Cologne   \n",
+            "2     1417567      Acqua Di Parma                   Perfume   \n",
+            "3     1417617      Acqua Di Parma                   Perfume   \n",
+            "4     2218766      Acqua Di Parma                 Fragrance   \n",
+            "...       ...                 ...                       ...   \n",
+            "9160  2149847  SEPHORA COLLECTION  Bath Soaks & Bubble Bath   \n",
+            "9161  1601111  SEPHORA COLLECTION                Brush Sets   \n",
+            "9162  2149839  SEPHORA COLLECTION        Scrub & Exfoliants   \n",
+            "9163  2208502  SEPHORA COLLECTION                Face Masks   \n",
+            "9166       50  SEPHORA COLLECTION               no category   \n",
+            "\n",
+            "                                                   name            size  \\\n",
+            "0                        Blu Mediterraneo MINIATURE Set  5 x 0.16oz/5mL   \n",
+            "1                                               Colonia   0.7 oz/ 20 mL   \n",
+            "2                                      Arancia di Capri    5 oz/ 148 mL   \n",
+            "3                                      Mirto di Panarea   2.5 oz/ 74 mL   \n",
+            "4                                 Colonia Miniature Set  5 x 0.16oz/5mL   \n",
+            "...                                                 ...             ...   \n",
+            "9160          Fizzing Bath Star Mini - Surprise Flowers      0.53oz/15g   \n",
+            "9161                  Face the Day: Full Face Brush Set         no size   \n",
+            "9162  Exfoliating Body Granita Scrub - Surprise Flowers    8.45oz/250mL   \n",
+            "9163                                 The Rose Gold Mask         no size   \n",
+            "9166                                          Gift Card         no size   \n",
+            "\n",
+            "      rating  number_of_reviews   love  price  value_price  ...  \\\n",
+            "0        4.0                  4   3002   66.0         75.0  ...   \n",
+            "1        4.5                 76   2700   66.0         66.0  ...   \n",
+            "2        4.5                 26   2600  180.0        180.0  ...   \n",
+            "3        4.5                 23   2900  120.0        120.0  ...   \n",
+            "4        3.5                  2    943   72.0         80.0  ...   \n",
+            "...      ...                ...    ...    ...          ...  ...   \n",
+            "9160     3.5                 11   2100    2.0          2.0  ...   \n",
+            "9161     3.5                 62  32900   49.0         95.0  ...   \n",
+            "9162     3.5                 39   6900    8.0          8.0  ...   \n",
+            "9163     2.0                 15   6200    6.0          6.0  ...   \n",
+            "9166     5.0                 46      0   50.0         50.0  ...   \n",
+            "\n",
+            "     MarketingFlags       MarketingFlags_content  \\\n",
+            "0              True                  online only   \n",
+            "1              True                  online only   \n",
+            "2              True                  online only   \n",
+            "3              True                  online only   \n",
+            "4              True                  online only   \n",
+            "...             ...                          ...   \n",
+            "9160           True      exclusive · online only   \n",
+            "9161           True  limited edition · exclusive   \n",
+            "9162           True      exclusive · online only   \n",
+            "9163           True  limited edition · exclusive   \n",
+            "9166          False                            0   \n",
+            "\n",
+            "                                                options  \\\n",
+            "0                                            no options   \n",
+            "1      - 0.7 oz/ 20 mL  Spray  - 1.7 oz/ 50 mL Eau d...   \n",
+            "2      - 1oz/30mL Eau de Toilette  - 2.5 oz/ 74 mL E...   \n",
+            "3      - 1 oz/ 30 mL Eau de Toilette Spray - 2.5 oz/...   \n",
+            "4                                            no options   \n",
+            "...                                                 ...   \n",
+            "9160                                         no options   \n",
+            "9161                                         no options   \n",
+            "9162                                         no options   \n",
+            "9163                                         no options   \n",
+            "9166                                         no options   \n",
+            "\n",
+            "                                                details  \\\n",
+            "0     This enchanting set comes in a specially handc...   \n",
+            "1     An elegant timeless scent filled with a fresh-...   \n",
+            "2     Fragrance Family: Fresh Scent Type: Fresh Citr...   \n",
+            "3     Panarea near Sicily is an an island suspended ...   \n",
+            "4     The Colonia Miniature Set comes in an iconic A...   \n",
+            "...                                                 ...   \n",
+            "9160  What it is:  A fizzing star that dissolves int...   \n",
+            "9161  What it is:\\nA six-piece brush set designed to...   \n",
+            "9162  What it is:  An indulgent- yet gentle exfoliat...   \n",
+            "9163  What it is: A limited-edition- nurturing and h...   \n",
+            "9166  What it is:- Available in denominations of $10...   \n",
+            "\n",
+            "                                             how_to_use  \\\n",
+            "0     Suggested Usage:-Fragrance is intensified by t...   \n",
+            "1                                       no instructions   \n",
+            "2                                       no instructions   \n",
+            "3                                       no instructions   \n",
+            "4     Suggested Usage:-Fragrance is intensified by t...   \n",
+            "...                                                 ...   \n",
+            "9160  Suggested Usage:-Place the fizzing star in the...   \n",
+            "9161                                    no instructions   \n",
+            "9162  Suggested Usage:-Apply to wet skin.-Massage in...   \n",
+            "9163  Suggested Usage:-Unfold the mask.-Apply the ma...   \n",
+            "9166                                    no instructions   \n",
+            "\n",
+            "                                            ingredients online_only  \\\n",
+            "0     Arancia di Capri Eau de Toilette: Alcohol Dena...           1   \n",
+            "1                                               unknown           1   \n",
+            "2     Alcohol Denat.- Water- Fragrance- Limonene- Li...           1   \n",
+            "3                                               unknown           1   \n",
+            "4     Colonia: Alcohol Denat.- Water- Fragrance- Lim...           1   \n",
+            "...                                                 ...         ...   \n",
+            "9160  Sodium Bicarbonate- Citric Acid- CI 77891 (Tit...           1   \n",
+            "9161                                            unknown           0   \n",
+            "9162  Water- Glycerin- Cellulose Acetate- Sodium Lau...           1   \n",
+            "9163  -Rose Quartz Extract: Hydrates dry skin.  Aqua...           0   \n",
+            "9166                                            unknown           0   \n",
+            "\n",
+            "      exclusive  limited_edition  limited_time_offer  \n",
+            "0             0                0                   0  \n",
+            "1             0                0                   0  \n",
+            "2             0                0                   0  \n",
+            "3             0                0                   0  \n",
+            "4             0                0                   0  \n",
+            "...         ...              ...                 ...  \n",
+            "9160          1                0                   0  \n",
+            "9161          1                1                   0  \n",
+            "9162          1                0                   0  \n",
+            "9163          1                1                   0  \n",
+            "9166          0                0                   0  \n",
+            "\n",
+            "[8770 rows x 21 columns]\n",
+            "limited_edition\n",
+            "0    4.5\n",
+            "1    4.5\n",
+            "Name: rating, dtype: float64\n",
+            "limited_edition\n",
+            "0    4.171098\n",
+            "1    4.171053\n",
+            "Name: rating, dtype: float64\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Los productos de edición limitada y los de no limitada presentan la misma mediana de calificación, o sea, 4.5.\n",
+        "\n",
+        "Los promedios son pácticamente iguales, con una diferencia de 0.000045. Aproximadamente 4,17 en ambos grupos. Para estos cálculos se consideraron únixamente los productos con rating mayor a 0.\n",
+        "\n",
+        "Según estas medidas, los productos de edición limitada no presentan una mejor valoración que los productos que no son de edición limitada.\n"
+      ],
+      "metadata": {
+        "id": "dvcqVM9hQdlt"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "\n",
+        "## Pregunta de investigación\n",
+        "\n",
+        "¿Los productos de edición limitada de Sephora tienen mejores ratings\n",
+        "y más \"loves\" que los productos regulares?\n",
+        "\n",
+        "**¿Por qué vale la pena responderla?**\n",
+        "Las ediciones limitadas se promocionan como productos especiales.\n",
+        "Esto permite ver si esa estrategia se refleja en la calidad percibida\n",
+        "y en la popularidad entre los usuarios.\n"
+      ],
+      "metadata": {
+        "id": "an6PH7J1qnOp"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Transformación 1:\n",
+        "limpieza de valores sin datos reales ya que algunas columnas usan textos como \"unknown\" o \"no category\" para indicar que falta información. Se reemplazan por valores vacíos (NaN) para que no se interpreten como datos reales.\n",
+        "\n",
+        "**Asistencia de IA (Claude):** la idea de esta transformación surgió de\n",
+        "una consulta a Claude. Prompt utilizado: \"Busca a ver si hay inconsistencias o datos que tal vez esten vacios y no aparezcan como null pero que no sirvan y explicame si me sirve partir de eso para hacer una transformacion\".\n",
+        "La IA detectó los textos \"unknown\", \"no category\" y \"no size\" en una tabla\n",
+        "que le compartió. Se verificó su presencia en el dataset\n",
+        "con value_counts() y explicó parte del código ya que hubo problemas con la deteccion de las inconsistencias del dataset, explico los prints y el uso del \"df original\" ya que se hayaron problemas iniciales en cuanto a la verificacion."
+      ],
+      "metadata": {
+        "id": "my2WhWiRfPDH"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df_original = pd.read_csv(\"sephora_website_dataset.csv\")\n",
+        "\n",
+        "print(\"ingredients = unknown:\", (df_original[\"ingredients\"] == \"unknown\").sum())\n",
+        "print(\"category = no category:\", (df_original[\"category\"] == \"no category\").sum())\n",
+        "print(\"size = no size:\", (df_original[\"size\"] == \"no size\").sum())\n",
+        "\n",
+        "df[\"ingredients\"] = df[\"ingredients\"].replace(\"unknown\", np.nan)\n",
+        "df[\"category\"] = df[\"category\"].replace(\"no category\", np.nan)\n",
+        "df[\"size\"] = df[\"size\"].replace(\"no size\", np.nan)\n",
+        "\n",
+        "df[[\"ingredients\", \"category\", \"size\"]].isnull().sum()"
+      ],
+      "metadata": {
+        "id": "PzCAka3yghTy",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 232
+        },
+        "outputId": "4669aeb3-4bfa-432c-acd9-85e6816bb035"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "ingredients = unknown: 1630\n",
+            "category = no category: 16\n",
+            "size = no size: 3161\n"
+          ]
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "ingredients    1630\n",
+              "category         16\n",
+              "size           3161\n",
+              "dtype: int64"
+            ],
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>0</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>ingredients</th>\n",
+              "      <td>1630</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>category</th>\n",
+              "      <td>16</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>size</th>\n",
+              "      <td>3161</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div><br><label><b>dtype:</b> int64</label>"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 37
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Tras reemplazar los textos “unknown”, “no category” y “no size” por valores nulos (NaN), se identificaron registrados 1630 productos sin ingredientes, 16 sin categoría y 3161 sin tamaño.\n",
+        "\n",
+        " S Se conservanestos registros porque la ausencia de información en esas columnas no impide comparar los favoritos y las calificaciones mediante las variables 'love', 'rating' y 'limited_edition'."
+      ],
+      "metadata": {
+        "id": "hxCGBCx4llcm"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Transformación 2: selección de productos con calificaciones mayores que cero\n",
+        "Para comparar la valoración se utiliza el subconjunto 'df_rating', creando anteriormente mediante el filtro 'df[\"rating\"] > 0'.\n",
+        "Este filtro excluye 398 registros con calificación igual a cero.\n",
+        "\n",
+        "Se busca evitar que posibles casos sin registrar valoración se interpreten como calificaiones negativas. Para comprobarlas, se revisa la cantidad de reseñas de los productos excluidos.\n",
+        "\n",
+        "El DataFrame completo 'df' se mantiene para analizar los favoritos."
+      ],
+      "metadata": {
+        "id": "nIqdsgimMsPs"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"productos con rating 0: \", (df[\"rating\"] == 0).sum())\n",
+        "\n",
+        "print(df.loc[df[\"rating\"] == 0, \"number_of_reviews\"].value_counts())"
+      ],
+      "metadata": {
+        "id": "XnMwkUKnM9Fz",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "4760d4fd-be22-43e8-ce30-500a8d37663d"
+      },
+      "execution_count": 10,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "productos con rating 0:  398\n",
+            "number_of_reviews\n",
+            "0      397\n",
+            "573      1\n",
+            "Name: count, dtype: int64\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Se identificaron 398 productos con calificación igual a cero.\n",
+        "Entre ellos 397 no tienen reseñas y uno presenta 573 reseñas, lo que señala una inconsistencia que requiere revisión.\n",
+        "\n",
+        "Los 398 productos con rating igual a 0 se excluyen de la comparación de calificaciones. Sin embargo, se conservan para comparar la cantidad de favoritos, ya que su ánalisis no depende de la calificación."
+      ],
+      "metadata": {
+        "id": "5r5qX4uOY_CK"
+      }
+    }
+  ]
+}
