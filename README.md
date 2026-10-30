@@ -12,10 +12,9 @@ Nombre y apellido, N° de registro, Usuario de GitHub
 - Delfina, Colamónico Torres. 921509. "dllll-ct".
 - Clara, Trillini Montaron. 921538. 
 - Melina Lais, Leiva. 921454. "lainn7"
-- Ayelen Daniela, Hamachi Vallejos. 921619. "ayelen-hv9"
 
 # Pregunta de investigación
-todavia no sabemos xd
+¿Los productos de Edición Limitada consiguen en general más “Rating” y más “Love” respecto a productos regulares entre los compradores de Sephora, o podemos concluir que quedarse con los productos clásicos es más rentable?
 
 # Dataset
 - Nombre: Sephora Website. 
