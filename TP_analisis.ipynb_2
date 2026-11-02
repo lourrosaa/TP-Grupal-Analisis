@@ -1025,12 +1025,12 @@
         "display(df[[\"love\", \"log_love\"]].head())"
       ],
       "metadata": {
-        "id": "6bAkrZ1S5jBO",
-        "outputId": "ccf80eae-0cc5-4f9e-d7ae-54642b6ef62b",
         "colab": {
           "base_uri": "https://localhost:8080/",
           "height": 204
-        }
+        },
+        "id": "6bAkrZ1S5jBO",
+        "outputId": "ccf80eae-0cc5-4f9e-d7ae-54642b6ef62b"
       },
       "execution_count": 3,
       "outputs": [
@@ -1231,12 +1231,12 @@
         "display(porcentaje_alto)"
       ],
       "metadata": {
-        "id": "x_jBCWuy8YDG",
-        "outputId": "801f1eb1-020c-43e8-c231-b718a6826f59",
         "colab": {
           "base_uri": "https://localhost:8080/",
           "height": 176
-        }
+        },
+        "id": "x_jBCWuy8YDG",
+        "outputId": "801f1eb1-020c-43e8-c231-b718a6826f59"
       },
       "execution_count": 7,
       "outputs": [
@@ -1308,7 +1308,9 @@
       "cell_type": "markdown",
       "source": [
         "### Grafico de la 3ra y 4ta transformación\n",
-        "Se realizó con Boxplot Agrupado."
+        "Se utiliza un boxplot agrupado para comparar la distribución de favoritos entre productos de edición limitada y no limitada, separandolos por calificación menor a 4,5 o mayor o igual. El gráfico combina la escala logarítmica de la transformación 3 con la calificación de rating de latransformación 4.\n",
+        "\n",
+        "Permite observar las medianas, la dispersión y valores atípicos de los cuatro grupos. Se observan solamente los productos con calificaiones mayores a cero."
       ],
       "metadata": {
         "id": "Ykmnaqod_9-l"
@@ -1356,12 +1358,12 @@
         "plt.show()"
       ],
       "metadata": {
-        "id": "6nru1HpcAEEB",
-        "outputId": "b314efe3-ca1f-4d7a-d4fb-e1832597e1ec",
         "colab": {
           "base_uri": "https://localhost:8080/",
           "height": 607
-        }
+        },
+        "id": "6nru1HpcAEEB",
+        "outputId": "b314efe3-ca1f-4d7a-d4fb-e1832597e1ec"
       },
       "execution_count": 18,
       "outputs": [
@@ -1388,17 +1390,6 @@
       ],
       "metadata": {
         "id": "_Pd6DmVYKySN"
-      }
-    },
-    {
-      "cell_type": "markdown",
-      "source": [
-        "edicion= edition\n",
-        "valoracion= rating\n",
-        "popularidad= love"
-      ],
-      "metadata": {
-        "id": "hAxGT2zbKoEM"
       }
     }
   ]
